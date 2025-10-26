@@ -135,7 +135,7 @@ const UserManagment = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                        Close
+                        Cerrar
                     </Button>
                     <Button variant="primary" onClick={handleClose} style={styles.groupButton}>
                         Agregar Staff
