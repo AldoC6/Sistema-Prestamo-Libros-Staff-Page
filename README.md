@@ -1,69 +1,39 @@
-# React + TypeScript + Vite
+# 📚 Staff Page for Book Landing System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta es la página donde el **staff de la biblioteca** podrá controlar los **préstamos de cada estudiante**.  
+Desarrollado con **React + Vite + TypeScript**, utilizando componentes de **React Bootstrap** y un backend basado en **Supabase**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tecnologías utilizadas
+- ⚛️ React + Vite  
+- 💙 TypeScript  
+- 🎨 React Bootstrap  
+- 🗄️ Supabase (Base de datos y autenticación)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧭 Pasos para ejecutar el proyecto
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+> 💡 **Nota:** Es necesario tener la base de datos configurada en Supabase antes de ejecutar el proyecto.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+1️⃣ **Clonar el repositorio:**
+```bash
+git clone https://github.com/tu-usuario/Sistema-Prestamo-Libros-Staff-Page.git
+cd Sistema-Prestamo-Libros-Staff-Page
+````
+2️⃣**Instalar dependencias:**
+```bash
+npm install
+````
+3️⃣ **Configurar variables de entorno:**
+Crea un archivo llamado .env.local en la raíz del proyecto y agrega tus keys de Supabase:
+```bash
+VITE_SUPABASE_URL=tu_url_de_supabase
+VITE_SUPABASE_ANON_KEY=tu_anon_key
+````
+4️⃣ **Ejecutar el servidor de desarrollo:**
+```bash
+npm run dev
+````
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
