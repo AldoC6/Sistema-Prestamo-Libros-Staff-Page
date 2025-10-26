@@ -1,8 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
+
 import "../../styles/nav.css";
+import { useAuth } from "../../context/AuthContext";
 
 
 export const Nav = () => {
+
+    const { signOut } = useAuth();
+
+    async function handleLogout() {
+        await signOut();
+        <Navigate to="/" replace />;
+    }
     return (
         <header className="main-nav">
             <nav>
@@ -30,6 +39,9 @@ export const Nav = () => {
                     </li>
                     <li>
                         <NavLink to="/Genres">Géneros </NavLink>
+                    </li>
+                    <li>
+                        <NavLink onClick={handleLogout} to="/">Cerrar Sesión</NavLink>
                     </li>
                 </ul>
             </nav>

@@ -1,24 +1,50 @@
+import { useState, type FormEvent } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 import fimeLogo from "../../assets/images/oso.png";
+import { useSignIn } from '../../hooks/useSignIn';
+import { useAuth } from "../../context/AuthContext";
 
+const SignIn: React.FC = () => {
+    const navigate = useNavigate();
 
+    const { user } = useAuth();
 
-const SignIn = () => {
+    const { signIn, loading, error } = useSignIn();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    if (user) {
+        return <Navigate to="/UserManagment" replace />;
+    }
+
+    async function handleSubmit(e: FormEvent) {
+        e.preventDefault();
+        const { ok } = await signIn(email, password);
+
+        if (ok) {
+            navigate("/UserManagment", { replace: true });
+        } else {
+            alert("Error al iniciar sesión: " + error);
+        }
+    }
+
     return (
         <div style={styles.bodylogin}>
             <div style={styles.loginContainer}>
                 <img src={fimeLogo} alt="Logo FIME" style={styles.logo} />
                 <h1 style={styles.h1}>Bienvenido</h1>
 
-                <form id="login-form">
+                <form id="login-form" onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
                         <label style={styles.label}>Correo Electrónico:</label>
                         <input
-                            type="text"
-                            id="email"
-                            name="username"
+                            type="email"
                             placeholder="Correo Electrónico"
                             required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             style={styles.input}
+                            disabled={loading}
                         />
                     </div>
 
@@ -26,33 +52,41 @@ const SignIn = () => {
                         <label style={styles.label}>Contraseña:</label>
                         <input
                             type="password"
-                            id="password"
-                            name="password"
                             placeholder="Contraseña"
                             required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             style={styles.input}
+                            disabled={loading}
                         />
                     </div>
 
                     <button
-                        name="submit"
+                        style={{
+                            ...styles.button,
+                            backgroundColor: loading ? "#888" : styles.button.backgroundColor,
+                            cursor: loading ? "not-allowed" : "pointer",
+                        }}
                         type="submit"
-                        style={styles.button}
-                        onMouseOver={(e) =>
-                        (e.currentTarget.style.backgroundColor =
-                            styles.buttonHover.backgroundColor!)
-                        }
-                        onMouseOut={(e) =>
-                            (e.currentTarget.style.backgroundColor = styles.button.backgroundColor!)
-                        }
+                        disabled={loading}
+                        onMouseOver={(e) => {
+                            if (!loading) {
+                                e.currentTarget.style.backgroundColor =
+                                    styles.buttonHover.backgroundColor!;
+                            }
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor =
+                                styles.button.backgroundColor!;
+                        }}
                     >
-                        Iniciar sesión
+                        {loading ? "Entrando..." : "Iniciar sesión"}
                     </button>
                 </form>
 
                 <div style={styles.registerWrapper}>
                     <a
-                        href="pages/registro-prueba.html"
+                        href="#"
                         style={styles.registerLink}
                     >
                         ¿No tienes cuenta? Regístrate aquí
@@ -64,7 +98,6 @@ const SignIn = () => {
 };
 
 export default SignIn;
-
 
 const styles = {
     bodylogin: {
@@ -122,7 +155,6 @@ const styles = {
         fontSize: 18,
         fontWeight: "bold",
         borderRadius: 6,
-        cursor: "pointer",
         transition: "background-color 0.3s ease",
     },
     buttonHover: {

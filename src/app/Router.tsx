@@ -9,28 +9,75 @@ import AddBook from "../pages/AddBook";
 import Authors from "../pages/Authors";
 import Genres from "../pages/Genres";
 import CheckBook from "../pages/CheckBook";
-
-
+import { PrivateRoute } from "../components/PrivateRoute";
 
 export const router = createBrowserRouter([
-    {
-        element: <RootLayout />,
-        children: [
-            { path: 'UserManagment', element: <UserManagment /> },
-            { path: 'BooksManagment', element: <BooksManagment /> },
-            { path: 'LoansManagment', element: <LoansManagment /> },
-            { path: 'CheckBook', element: <CheckBook /> },
-            { path: 'AddBook', element: <AddBook /> },
-            { path: 'Authors', element: <Authors /> },
-            { path: 'Genres', element: <Genres /> },
-
-        ],
-    },
     {
         element: <AuthLayout />,
         children: [
             { index: true, element: <SignIn /> },
-        ]
+        ],
+    },
+    {
+        element: <RootLayout />,
+        children: [
+            {
+                path: 'UserManagment',
+                element: (
+                    <PrivateRoute>
+                        <UserManagment />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'BooksManagment',
+                element: (
+                    <PrivateRoute>
+                        <BooksManagment />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'LoansManagment',
+                element: (
+                    <PrivateRoute>
+                        <LoansManagment />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'CheckBook',
+                element: (
+                    <PrivateRoute>
+                        <CheckBook />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'AddBook',
+                element: (
+                    <PrivateRoute>
+                        <AddBook />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'Authors',
+                element: (
+                    <PrivateRoute>
+                        <Authors />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'Genres',
+                element: (
+                    <PrivateRoute>
+                        <Genres />
+                    </PrivateRoute>
+                ),
+            },
+        ],
     },
     {
         path: "*",

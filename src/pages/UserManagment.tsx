@@ -7,8 +7,24 @@ import Modal from 'react-bootstrap/Modal';
 const UserManagment = () => {
     const [show, setShow] = useState(false);
 
+    const [validated, setValidated] = useState(false)
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        const form = event.currentTarget
+        event.preventDefault()
+        if (form.checkValidity() === false) {
+            event.stopPropagation()
+        } else {
+            // TODO GUARDAR STAFF
+            console.log("Formulario válido, enviando datos...")
+            handleClose()
+        }
+        setValidated(true)
+    }
 
     return (
         <div style={styles.bodyUsers}>
@@ -79,68 +95,56 @@ const UserManagment = () => {
                     <Modal.Title>Agregar Nuevo Staff</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
-                        <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlInputName">
+                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3" controlId="nombre">
                             <Form.Label>Nombre</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Nombre"
-                                autoFocus
-                            />
+                            <Form.Control required type="text" placeholder="Nombre" />
+                            <Form.Control.Feedback type="invalid">
+                                Por favor ingresa el nombre
+                            </Form.Control.Feedback>
                         </Form.Group>
-                        <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlTextarea1"
-                        >
+
+                        <Form.Group className="mb-3" controlId="apellido">
                             <Form.Label>Apellido</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder='Apellido'
-                            />
+                            <Form.Control required type="text" placeholder="Apellido" />
+                            <Form.Control.Feedback type="invalid">
+                                Por favor ingresa el apellido
+                            </Form.Control.Feedback>
                         </Form.Group>
-                        <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlTextarea1"
-                        >
-                            <Form.Label>Matricula</Form.Label>
+
+                        <Form.Group className="mb-3" controlId="correo">
+                            <Form.Label>Correo Electrónico</Form.Label>
                             <Form.Control
-                                type='text'
-                                placeholder='Matricula'
-                            />
-                        </Form.Group>
-                        <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlTextarea1"
-                        >
-                            <Form.Label>Correo Eléctronico</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder='Correo Eléctronico'
-                            />
-                        </Form.Group>
-                        <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlTextarea1"
-                        >
-                            <Form.Label>Contraseña</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder='Contraseña'
                                 required
+                                type="email"
+                                placeholder="correo@ejemplo.com"
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Ingresa un correo válido
+                            </Form.Control.Feedback>
                         </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="matricula">
+                            <Form.Label>Matrícula</Form.Label>
+                            <Form.Control required type="text" placeholder="Matricula" />
+                            <Form.Control.Feedback type="invalid">
+                                Campo obligatorio
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="password">
+                            <Form.Label>Contraseña</Form.Label>
+                            <Form.Control required type="password" placeholder="Contraseña" />
+                            <Form.Control.Feedback type="invalid">
+                                Ingresa una contraseña
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
+                        <Button variant="primary" type="submit" style={styles.groupButton}>
+                            Agregar Staff
+                        </Button>
                     </Form>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Cerrar
-                    </Button>
-                    <Button variant="primary" onClick={handleClose} style={styles.groupButton}>
-                        Agregar Staff
-                    </Button>
-                </Modal.Footer>
             </Modal>
         </div>
     );
