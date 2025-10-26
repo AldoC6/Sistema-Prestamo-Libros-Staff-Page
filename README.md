@@ -19,8 +19,8 @@ Desarrollado con **React + Vite + TypeScript**, utilizando componentes de **Reac
 
 1️⃣ **Clonar el repositorio:**
 ```bash
-git clone https://github.com/tu-usuario/tu-repo.git
-cd tu-repo
+git clone https://github.com/tu-usuario/Sistema-Prestamo-Libros-Staff-Page.git
+cd Sistema-Prestamo-Libros-Staff-Page
 ````
 2️⃣**Instalar dependencias:**
 ```bash
