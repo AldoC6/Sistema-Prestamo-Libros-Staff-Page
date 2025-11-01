@@ -1,97 +1,109 @@
-
+import { useBooks } from "../hooks/useBooks";
 
 const BooksManagment = () => {
+    const { books, loading, error } = useBooks();
+
     return (
         <div style={styles.bodyBooks}>
             <div style={styles.containerBooks}>
                 <h1 style={styles.h1Books}>Gestionar libros</h1>
 
-                <div style={styles.searchContainer}>
-                    <label htmlFor="searchInput" style={styles.searchLabel}>
-                        Buscar:
-                    </label>
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Buscar por título..."
-                        style={styles.searchInput}
-                    />
-                </div>
                 <div style={styles.buttonGroup}>
-                    <button
-                        style={styles.groupButton}
-                        onMouseOver={(e) =>
-                        (e.currentTarget.style.backgroundColor =
-                            styles.groupButtonHover.backgroundColor!)
-                        }
-                        onMouseOut={(e) =>
-                            (e.currentTarget.style.backgroundColor = styles.groupButton.backgroundColor!)
-                        }
-                    >
-                        Agregar libro
-                    </button>
-
                 </div>
 
-                <table id="bookTable" style={styles.table}>
-                    <thead>
-                        <tr>
-                            <th style={styles.th}>ID</th>
-                            <th style={styles.th}>Título</th>
-                            <th style={styles.th}>ISBN</th>
-                            <th style={styles.th}>Autor</th>
-                            <th style={styles.th}>Genero</th>
-                            <th style={styles.th}>Fecha Publicación</th>
-                            <th style={styles.th}>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* ejemplo de fila con botones */}
-                        {/* <tr>
-              <td style={styles.td}>1</td>
-              <td style={styles.td}>El Quijote</td>
-              <td style={styles.td}>1234567890</td>
-              <td style={styles.td}>Cervantes</td>
-              <td style={styles.td}>Clásico</td>
-              <td style={styles.td}>1605-01-16</td>
-              <td style={styles.td}>
-                <button
-                  style={{ ...styles.actionBtnBase, ...styles.editBtn }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      styles.editBtnHover.backgroundColor!)
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor = styles.editBtn.backgroundColor!)
-                  }
-                >
-                  Editar
-                </button>
+                {loading && <p>Cargando libros...</p>}
+                {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
-                <button
-                  style={{ ...styles.actionBtnBase, ...styles.deleteBtn }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      styles.deleteBtnHover.backgroundColor!)
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      styles.deleteBtn.backgroundColor!)
-                  }
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr> */}
-                    </tbody>
-                </table>
+                {!loading && !error && (
+                    <table id="bookTable" style={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={styles.th}>ID</th>
+                                <th style={styles.th}>Título</th>
+                                <th style={styles.th}>ISBN</th>
+                                <th style={styles.th}>Autor</th>
+                                <th style={styles.th}>Género</th>
+                                <th style={styles.th}>Fecha Publicación</th>
+                                <th style={styles.th}>Portada</th>
+                                <th style={styles.th}>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {books.map((b) => (
+                                <tr key={b.id_libro}>
+                                    <td style={styles.td}>{b.id_libro}</td>
+                                    <td style={styles.td}>{b.titulo}</td>
+                                    <td style={styles.td}>{b.ISBN}</td>
+                                    <td style={styles.td}>
+                                        {b.Autores
+                                            ? `${b.Autores.first_name} ${b.Autores.last_name}`
+                                            : "—"}
+                                    </td>
+                                    <td style={styles.td}>
+                                        {b.Generos ? b.Generos.genero : "—"}
+                                    </td>
+                                    <td style={styles.td}>
+                                        {b.fecha_publicacion}
+                                    </td>
+                                    <td style={styles.td}>
+                                        {b.Images && b.Images.length > 0 ? (
+                                            <img
+                                                src={b.Images[0].url}
+                                                alt="Portada"
+                                                style={{ width: 70, height: "auto", borderRadius: 6 }}
+                                            />
+                                        ) : (
+                                            "—"
+                                        )}
+                                    </td>
+                                    <td style={styles.td}>
+                                        {/* por ahora botones sin acción */}
+                                        <button
+                                            style={{ ...styles.actionBtnBase, ...styles.editBtn }}
+                                            onMouseOver={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.editBtnHover.backgroundColor!
+                                            )
+                                            }
+                                            onMouseOut={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.editBtn.backgroundColor!
+                                            )
+                                            }
+                                        >
+                                            Editar
+                                        </button>
 
+                                        <button
+                                            style={{ ...styles.actionBtnBase, ...styles.deleteBtn }}
+                                            onMouseOver={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.deleteBtnHover.backgroundColor!
+                                            )
+                                            }
+                                            onMouseOut={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.deleteBtn.backgroundColor!
+                                            )
+                                            }
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );
 };
 
 export default BooksManagment;
+
+// styles igual que ya tienes
+
 
 const styles = {
     bodyBooks: {

@@ -32,7 +32,7 @@ const SignIn: React.FC = () => {
         <div style={styles.bodylogin}>
             <div style={styles.loginContainer}>
                 <img src={fimeLogo} alt="Logo FIME" style={styles.logo} />
-                <h1 style={styles.h1}>Bienvenido</h1>
+                <h1 style={styles.h1}>Bienvenido al Sistema de Prestamo de Libros</h1>
 
                 <form id="login-form" onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
@@ -84,14 +84,6 @@ const SignIn: React.FC = () => {
                     </button>
                 </form>
 
-                <div style={styles.registerWrapper}>
-                    <a
-                        href="#"
-                        style={styles.registerLink}
-                    >
-                        ¿No tienes cuenta? Regístrate aquí
-                    </a>
-                </div>
             </div>
         </div>
     );

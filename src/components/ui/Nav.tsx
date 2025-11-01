@@ -20,9 +20,6 @@ export const Nav = () => {
                         <NavLink to="/UserManagment" end>Gestionar Usuarios</NavLink>
                     </li>
                     <li>
-                        <a href="https://www.facebook.com">Verificación Facial</a>
-                    </li>
-                    <li>
                         <NavLink to="/BooksManagment">Gestionar Libros</NavLink>
                     </li>
                     <li>
@@ -32,13 +29,13 @@ export const Nav = () => {
                         <NavLink to="/LoansManagment">Gestionar Préstamos</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/CheckBook">Consultar Libros</NavLink>
-                    </li>
-                    <li>
                         <NavLink to="/Authors">Autores de libros</NavLink>
                     </li>
                     <li>
                         <NavLink to="/Genres">Géneros </NavLink>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com">Verificación Facial</a>
                     </li>
                     <li>
                         <NavLink onClick={handleLogout} to="/">Cerrar Sesión</NavLink>

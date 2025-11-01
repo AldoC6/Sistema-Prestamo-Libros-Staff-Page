@@ -8,7 +8,6 @@ import LoansManagment from "../pages/LoansManagment";
 import AddBook from "../pages/AddBook";
 import Authors from "../pages/Authors";
 import Genres from "../pages/Genres";
-import CheckBook from "../pages/CheckBook";
 import { PrivateRoute } from "../components/PrivateRoute";
 
 export const router = createBrowserRouter([
@@ -42,14 +41,6 @@ export const router = createBrowserRouter([
                 element: (
                     <PrivateRoute>
                         <LoansManagment />
-                    </PrivateRoute>
-                ),
-            },
-            {
-                path: 'CheckBook',
-                element: (
-                    <PrivateRoute>
-                        <CheckBook />
                     </PrivateRoute>
                 ),
             },

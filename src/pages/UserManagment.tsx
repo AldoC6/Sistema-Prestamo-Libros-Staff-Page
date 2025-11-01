@@ -2,28 +2,72 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-
+import { supabase } from '../lib/supabase';
+import { useStaff } from '../hooks/useStaff';
+import { useRoles } from '../hooks/useRoles';
 
 const UserManagment = () => {
-    const [show, setShow] = useState(false);
+    const { staff, loading, error, reload } = useStaff();
+    const { roles, loading: loadingRoles } = useRoles();
 
-    const [validated, setValidated] = useState(false)
+    const [show, setShow] = useState(false);
+    const [validated, setValidated] = useState(false);
+
+    // estados del formulario
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [matricula, setMatricula] = useState("");
+    const [password, setPassword] = useState("");
+    const [roleId, setRoleId] = useState<string>(""); // <- ya no default fijo
+
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        // limpiar cada que abrimos
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setMatricula("");
+        setPassword("");
+        setRoleId(roles.length > 0 ? String(roles[0].id_role) : "");
+        setValidated(false);
+        setShow(true);
+    };
 
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const form = event.currentTarget;
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        const form = event.currentTarget
-        event.preventDefault()
         if (form.checkValidity() === false) {
-            event.stopPropagation()
-        } else {
-            // TODO GUARDAR STAFF
-            console.log("Formulario válido, enviando datos...")
-            handleClose()
+            event.stopPropagation();
+            setValidated(true);
+            return;
         }
-        setValidated(true)
+
+        // Aquí creamos el usuario en auth con metadata que tu trigger espera
+        const { data, error } = await supabase.auth.admin.createUser({
+            email,
+            password,
+            user_metadata: {
+                first_name: firstName,
+                last_name: lastName,
+                matricula: matricula,
+                role_id: roleId,
+            }
+        });
+
+        if (error) {
+            console.error("Error creando usuario:", error);
+            alert("No se pudo crear el usuario: " + error.message);
+            return;
+        }
+
+        console.log("Usuario creado:", data);
+
+        // tu trigger ya debió insertar en "Usuarios"
+        await reload();
+        handleClose();
     }
 
     return (
@@ -31,65 +75,63 @@ const UserManagment = () => {
             <div style={styles.containerUsers}>
                 <h1 style={styles.h1Users}>Gestionar usuarios</h1>
 
-                <div style={styles.searchContainer}>
-                    <label style={styles.searchLabel} htmlFor="searchInput">
-                        Buscar:
-                    </label>
-
-                    <input
-                        style={styles.searchInput}
-                        type="text"
-                        id="searchInput"
-                        placeholder="Buscar por ID o nombre..."
-                    />
-                </div>
                 <div style={styles.buttonGroup}>
                     <Button variant="primary" onClick={handleShow} style={styles.groupButton}>
-                        Agregar Nuevo Staff
+                        Agregar Usuario
                     </Button>
-
                 </div>
 
-                <table id="userTable" style={styles.table}>
-                    <thead>
-                        <tr>
-                            <th style={styles.th}>ID</th>
-                            <th style={styles.th}>Nombre</th>
-                            <th style={styles.th}>Apellido</th>
-                            <th style={styles.th}>Correo</th>
-                            <th style={styles.th}>Matricula</th>
-                            <th style={styles.th}>Rol</th>
-                            <th style={styles.th}>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Ejemplo de fila con botón de revocar */}
-                        {/* <tr>
-              <td style={styles.td}>14</td>
-              <td style={styles.td}>Aldo</td>
-              <td style={styles.td}>Cavazos</td>
-              <td style={styles.td}>acavazos@fime.uanl.mx</td>
-              <td style={styles.td}>2048374</td>
-              <td style={styles.td}>Admin</td>
-              <td style={styles.td}>
-                <button
-                  style={{ ...styles.actionBtnBase, ...styles.revokeBtn }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      styles.revokeBtnHover.backgroundColor!)
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      styles.revokeBtn.backgroundColor!)
-                  }
-                >
-                  Revocar acceso
-                </button>
-              </td>
-            </tr> */}
-                    </tbody>
-                </table>
+                {loading && <p>Cargando usuarios...</p>}
+                {error && <p style={{ color: "red" }}>Error: {error}</p>}
+
+                {!loading && !error && (
+                    <table id="userTable" style={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={styles.th}>ID</th>
+                                <th style={styles.th}>Nombre</th>
+                                <th style={styles.th}>Apellido</th>
+                                <th style={styles.th}>Correo</th>
+                                <th style={styles.th}>Matricula</th>
+                                <th style={styles.th}>Rol</th>
+                                <th style={styles.th}>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {staff.map(u => (
+                                <tr key={u.id_user}>
+                                    <td style={styles.td}>{u.id_user}</td>
+                                    <td style={styles.td}>{u.first_name}</td>
+                                    <td style={styles.td}>{u.last_name}</td>
+                                    <td style={styles.td}>{u.email}</td>
+                                    <td style={styles.td}>{u.matricula}</td>
+                                    <td style={styles.td}>{u.Roles?.role ?? u.role_id}</td>
+                                    <td style={styles.td}>
+                                        <button
+                                            style={{ ...styles.actionBtnBase, ...styles.revokeBtn }}
+                                            onMouseOver={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.revokeBtnHover.backgroundColor!)
+                                            }
+                                            onMouseOut={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.revokeBtn.backgroundColor!)
+                                            }
+                                            onClick={() => {
+                                                alert("TODO: Revocar acceso para " + u.email);
+                                            }}
+                                        >
+                                            Revocar acceso
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
+
+            {/* MODAL */}
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Agregar Nuevo Staff</Modal.Title>
@@ -98,7 +140,13 @@ const UserManagment = () => {
                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" controlId="nombre">
                             <Form.Label>Nombre</Form.Label>
-                            <Form.Control required type="text" placeholder="Nombre" />
+                            <Form.Control
+                                required
+                                type="text"
+                                placeholder="Nombre"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                            />
                             <Form.Control.Feedback type="invalid">
                                 Por favor ingresa el nombre
                             </Form.Control.Feedback>
@@ -106,7 +154,13 @@ const UserManagment = () => {
 
                         <Form.Group className="mb-3" controlId="apellido">
                             <Form.Label>Apellido</Form.Label>
-                            <Form.Control required type="text" placeholder="Apellido" />
+                            <Form.Control
+                                required
+                                type="text"
+                                placeholder="Apellido"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                            />
                             <Form.Control.Feedback type="invalid">
                                 Por favor ingresa el apellido
                             </Form.Control.Feedback>
@@ -118,6 +172,8 @@ const UserManagment = () => {
                                 required
                                 type="email"
                                 placeholder="correo@ejemplo.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                             <Form.Control.Feedback type="invalid">
                                 Ingresa un correo válido
@@ -126,15 +182,57 @@ const UserManagment = () => {
 
                         <Form.Group className="mb-3" controlId="matricula">
                             <Form.Label>Matrícula</Form.Label>
-                            <Form.Control required type="text" placeholder="Matricula" />
+                            <Form.Control
+                                required
+                                type="text"
+                                placeholder="Matricula"
+                                value={matricula}
+                                onChange={(e) => setMatricula(e.target.value)}
+                            />
                             <Form.Control.Feedback type="invalid">
                                 Campo obligatorio
                             </Form.Control.Feedback>
                         </Form.Group>
 
+                        <Form.Group className="mb-3" controlId="role_id">
+                            <Form.Label>Rol</Form.Label>
+                            <Form.Select
+                                required
+                                disabled={loadingRoles}
+                                value={roleId}
+                                onChange={(e) => setRoleId(e.target.value)}
+                            >
+                                {loadingRoles && (
+                                    <option value="">Cargando roles...</option>
+                                )}
+
+                                {!loadingRoles && roles.length === 0 && (
+                                    <option value="">No hay roles definidos</option>
+                                )}
+
+                                {!loadingRoles && roles.map((rol) => (
+                                    <option
+                                        key={rol.id_role}
+                                        value={rol.id_role}
+                                    >
+                                        {rol.role}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                            <Form.Control.Feedback type="invalid">
+                                Selecciona un rol
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
                         <Form.Group className="mb-3" controlId="password">
                             <Form.Label>Contraseña</Form.Label>
-                            <Form.Control required type="password" placeholder="Contraseña" />
+                            <Form.Control
+                                required
+                                type="password"
+                                placeholder="Contraseña"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                             <Form.Control.Feedback type="invalid">
                                 Ingresa una contraseña
                             </Form.Control.Feedback>

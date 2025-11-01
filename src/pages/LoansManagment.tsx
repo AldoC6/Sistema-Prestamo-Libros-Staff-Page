@@ -1,50 +1,71 @@
-
+import { useLoans } from "../hooks/useLoans";
 
 const LoansManagment = () => {
+    const { loans, loading, error } = useLoans();
+
     return (
         <div style={styles.bodyLoansManagement}>
             <div style={styles.containerLoansManagement}>
                 <h1 style={styles.h1LoansManagment}>Gestionar préstamos</h1>
 
-                <table id="loansTable" style={styles.table}>
-                    <thead>
-                        <tr>
-                            <th style={styles.th}>ID</th>
-                            <th style={styles.th}>Libro</th>
-                            <th style={styles.th}>Usuario</th>
-                            <th style={styles.th}>Fecha Inicio</th>
-                            <th style={styles.th}>Fecha Devolución</th>
-                            <th style={styles.th}>Estado</th>
-                            <th style={styles.th}>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Ejemplo de fila con botón "Devolver" */}
-                        {/* <tr>
-              <td style={styles.td}>1</td>
-              <td style={styles.td}>El Quijote</td>
-              <td style={styles.td}>Juan Pérez</td>
-              <td style={styles.td}>2025-10-01</td>
-              <td style={styles.td}>2025-10-15</td>
-              <td style={styles.td}>Activo</td>
-              <td style={styles.td}>
-                <button
-                  style={{ ...styles.actionBtnBase, ...styles.returnBtn }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      styles.returnBtnHover.backgroundColor!)
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      styles.returnBtn.backgroundColor!)
-                  }
-                >
-                  Marcar devuelto
-                </button>
-              </td>
-            </tr> */}
-                    </tbody>
-                </table>
+                {loading && <p>Cargando préstamos...</p>}
+                {error && <p style={{ color: "red" }}>Error: {error}</p>}
+
+                {!loading && !error && (
+                    <table id="loansTable" style={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={styles.th}>ID</th>
+                                <th style={styles.th}>Libro</th>
+                                <th style={styles.th}>Usuario</th>
+                                <th style={styles.th}>Fecha Inicio</th>
+                                <th style={styles.th}>Fecha Devolución</th>
+                                <th style={styles.th}>Estado</th>
+                                <th style={styles.th}>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loans.map((p) => (
+                                <tr key={p.id_prestamo}>
+                                    <td style={styles.td}>{p.id_prestamo}</td>
+                                    <td style={styles.td}>
+                                        {p.Libros ? p.Libros.titulo : "—"}
+                                    </td>
+                                    <td style={styles.td}>
+                                        {p.Usuarios
+                                            ? `${p.Usuarios.first_name} ${p.Usuarios.last_name}`
+                                            : "—"}
+                                    </td>
+                                    <td style={styles.td}>{p.fecha_inicio}</td>
+                                    <td style={styles.td}>{p.fecha_devolucion}</td>
+                                    <td style={styles.td}>
+                                        {p.Estados ? p.Estados.estado : "—"}
+                                    </td>
+                                    <td style={styles.td}>
+                                        <button
+                                            style={{
+                                                ...styles.actionBtnBase,
+                                                ...styles.returnBtn,
+                                            }}
+                                            onMouseOver={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.returnBtnHover.backgroundColor!
+                                            )
+                                            }
+                                            onMouseOut={(e) =>
+                                            (e.currentTarget.style.backgroundColor =
+                                                styles.returnBtn.backgroundColor!
+                                            )
+                                            }
+                                        >
+                                            Marcar devuelto
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     );
