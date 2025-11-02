@@ -35,7 +35,7 @@ export const Nav = () => {
                         <NavLink to="/Genres">Géneros </NavLink>
                     </li>
                     <li>
-                        <a href="https://www.facebook.com">Verificación Facial</a>
+                        <a href="http://172.20.10.10">Verificación Facial</a>
                     </li>
                     <li>
                         <NavLink onClick={handleLogout} to="/">Cerrar Sesión</NavLink>
